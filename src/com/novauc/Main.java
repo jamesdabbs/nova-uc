@@ -6,6 +6,7 @@ import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
@@ -31,6 +32,23 @@ public class Main {
         stmt.execute();
     }
 
+    public static ArrayList<Song> getAllSongs() throws SQLException {
+        PreparedStatement s = getConnection().prepareStatement("SELECT id, artist, title FROM songs");
+
+        ArrayList<Song> songs = new ArrayList<>();
+        ResultSet r = s.executeQuery();
+        while(r.next()) {
+            // Step through each result
+            int id = r.getInt("id");
+            String artist = r.getString("artist");
+            String title = r.getString("title");
+
+            songs.add(new Song(id, artist, title));
+        }
+
+        return songs;
+    }
+
     public static User currentUser() {
         return new User(1, "jdabbs");
     };
@@ -41,11 +59,6 @@ public class Main {
         Server.createWebServer().start();
 
         createTables();
-//        s.execute("DROP TABLE IF EXISTS users");
-//
-//        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users (name) VALUES (?)");
-//        stmt.setString(1, "SQL");
-//        stmt.execute();
 
         Spark.get("/",
             (req, res) -> {
@@ -63,10 +76,16 @@ public class Main {
 
                     saveSong(name, title);
 
-                    // Redirect back to the home page
-                    res.redirect("/");
+                    res.redirect("/songs");
                     return "";
                 });
 
+        Spark.get("/songs",
+                (req, res) -> {
+                    HashMap m = new HashMap<>();
+                    ArrayList<Song> songs = getAllSongs();
+                    m.put("songs", songs);
+                    return new ModelAndView(m, "songs.html");
+                }, new MustacheTemplateEngine());
     }
 }
