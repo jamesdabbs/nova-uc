@@ -5,6 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-  <p>Hello {{name}}</p>
+    <p>Hello {{name}}</p>
+
+    <form action="/enter_song" method="POST">
+        <p>Artist</p>
+        <input type="text" name="artist">
+        <p>Title</p>
+        <input type="text" name="song">
+        <button>Suggest</button>
+    </form>
 </body>
 </html>
