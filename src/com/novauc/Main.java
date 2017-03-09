@@ -22,12 +22,18 @@ public class Main {
     }
 
     public static void saveSong(String artistName, String songName) throws SQLException {
+        User user = currentUser();
+
         PreparedStatement stmt = getConnection().prepareStatement("INSERT INTO songs (artist, title, user_id) VALUES (?, ?, ?)");
-        stmt.setString(1, name);
-        stmt.setString(2, title);
-        stmt.setInt(3, 1);
+        stmt.setString(1, artistName);
+        stmt.setString(2, songName);
+        stmt.setInt(3, user.getId());
         stmt.execute();
     }
+
+    public static User currentUser() {
+        return new User(1, "jdabbs");
+    };
 
     public static void main(String[] args) throws SQLException {
         Spark.init();
