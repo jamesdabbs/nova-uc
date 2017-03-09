@@ -7,11 +7,13 @@ public class Song {
     int id;
     String artist;
     String title;
+    int rating;
 
-    public Song(int id, String artist, String title) {
+    public Song(int id, String artist, String title, int rating) {
         this.id = id;
         this.artist = artist;
         this.title = title;
+        this.rating = rating;
     }
 
     public String getArtist() {

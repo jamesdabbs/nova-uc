@@ -33,7 +33,13 @@ public class Main {
     }
 
     public static ArrayList<Song> getAllSongs() throws SQLException {
-        PreparedStatement s = getConnection().prepareStatement("SELECT id, artist, title FROM songs");
+        PreparedStatement s = getConnection().prepareStatement(
+                "SELECT songs.id, songs.artist, songs.title, votes.rating " +
+                        "FROM songs LEFT OUTER JOIN votes " +
+                        "ON songs.id = votes.song_id " +
+                        "WHERE votes.user_id = ? OR votes.user_id IS NULL"
+                );
+        s.setInt(1, currentUser().getId());
 
         ArrayList<Song> songs = new ArrayList<>();
         ResultSet r = s.executeQuery();
@@ -42,8 +48,9 @@ public class Main {
             int id = r.getInt("id");
             String artist = r.getString("artist");
             String title = r.getString("title");
+            int rating = r.getInt("rating");
 
-            songs.add(new Song(id, artist, title));
+            songs.add(new Song(id, artist, title, rating));
         }
 
         return songs;
