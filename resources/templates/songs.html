@@ -16,6 +16,7 @@
                 <th>Artist</th>
                 <th>Title</th>
                 <th>Votes</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -24,8 +25,13 @@
                 <td>{{id}}</td>
                 <td>{{artist}}</td>
                 <td>{{title}}</td>
+                <td>{{rating}}</td>
                 <td>
-                    Your rating is {{rating}}
+                    <form action="/save_vote" method="POST">
+                        <input type="text" class="form-control" name="rating">
+                        <input type="hidden" name="song" value="{{id}}">
+                        <button class="btn btn-default">Save</button>
+                    </form>
                 </td>
             </tr>
             {{/songs}}

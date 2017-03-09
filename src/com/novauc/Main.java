@@ -94,5 +94,18 @@ public class Main {
                     m.put("songs", songs);
                     return new ModelAndView(m, "songs.html");
                 }, new MustacheTemplateEngine());
+
+        Spark.post("/save_vote",
+                (req, res) -> {
+                    PreparedStatement s = getConnection().prepareStatement(
+                            "INSERT INTO votes (song_id, user_id, rating) VALUES (?, ?, ?)");
+                    s.setInt(1, Integer.valueOf(req.queryParams("song")));
+                    s.setInt(2, currentUser().getId());
+                    s.setInt(3, Integer.valueOf(req.queryParams("rating")));
+                    s.execute();
+
+                    res.redirect("/songs");
+                    return "";
+                });
     }
 }
